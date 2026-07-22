@@ -19,7 +19,7 @@ export default function App() {
 
   return (
     <div>
-      <div className="fixed left-4 top-4 z-50 w-[min(560px,calc(100vw-2rem))] rounded-[1.4rem] border border-graphite-100 bg-white/92 p-1 shadow-panel backdrop-blur-md">
+      <div className="fixed left-4 top-4 z-50 w-[min(560px,calc(100vw-2rem))] rounded-[1.4rem] border border-graphite-100 bg-graphite-50/92 p-1 shadow-panel backdrop-blur-md">
         <div className="grid grid-cols-2 gap-1">
           <button
             type="button"

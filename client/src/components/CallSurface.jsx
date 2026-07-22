@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { detectTranscript, submitIncidentReport } from '../lib/api'
-import { formatDuration, shortId } from '../lib/format'
+import { formatDuration } from '../lib/format'
 import { splitRiskHighlights } from '../lib/risk'
 import RiskMeter from './RiskMeter'
 import { useCallSession } from '../hooks/useCallSession'
@@ -28,7 +28,7 @@ function TranscriptRail({ transcript, interimText, onInjectDemo, speechSupported
   const lines = useMemo(() => transcript.slice(-8), [transcript])
 
   return (
-    <aside className="flex h-full flex-col rounded-[1.8rem] border border-graphite-100 bg-white/92 shadow-panel backdrop-blur-sm">
+    <aside className="flex h-full flex-col rounded-[1.8rem] border border-graphite-100 bg-graphite-50/92 shadow-panel backdrop-blur-sm">
       <div className="flex items-center justify-between border-b border-graphite-100 px-4 py-3">
         <div>
           <div className="text-[11px] uppercase tracking-[0.24em] text-graphite-500">Live transcript</div>
@@ -238,19 +238,18 @@ export default function CallSurface({ socket, sessionId, roomId, setRoomId, onOp
   const callTone = latestRisk.riskLevel === 'CRITICAL' ? 'critical' : latestRisk.riskLevel === 'ELEVATED' ? 'caution' : 'institute'
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-graphite-50 text-graphite-950">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(62,110,142,0.16),transparent_34%),linear-gradient(180deg,rgba(244,245,246,0.9),rgba(231,233,236,1))]" />
+    <div className="relative min-h-screen overflow-hidden bg-graphite-50 text-graphite-900">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(78,127,147,0.18),transparent_34%),linear-gradient(180deg,rgba(237,241,244,0.94),rgba(221,229,234,0.98))]" />
       <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col px-3 py-3 sm:px-6 lg:px-8">
-        <header className="mb-4 flex flex-col gap-3 rounded-[1.8rem] border border-graphite-100 bg-white/88 px-4 py-3 shadow-panel backdrop-blur-sm lg:flex-row lg:items-center lg:justify-between">
+        <header className="mb-4 flex flex-col gap-3 rounded-[1.8rem] border border-graphite-100 bg-graphite-50/88 px-4 py-3 shadow-panel backdrop-blur-sm lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-4">
             <div>
               <div className="text-[11px] uppercase tracking-[0.28em] text-graphite-500">Citizen call surface</div>
-              <div className="text-lg font-semibold tracking-tight text-graphite-950">SafeCall secure intervention room</div>
+              <div className="text-lg font-semibold tracking-tight text-graphite-900">SafeCall secure intervention room</div>
             </div>
             <StatusChip label={connected ? 'connected' : 'standby'} tone={connected ? 'institute' : 'graphite'} />
           </div>
           <div className="flex flex-wrap items-center gap-3 text-xs text-graphite-500">
-            <div className="rounded-[0.95rem] border border-graphite-100 bg-graphite-50 px-3 py-2 font-mono">session {shortId(sessionId)}</div>
             <div className="rounded-[0.95rem] border border-graphite-100 bg-graphite-50 px-3 py-2 font-mono">room {roomId}</div>
             <div className="rounded-[0.95rem] border border-graphite-100 bg-graphite-50 px-3 py-2 font-mono">elapsed {formatDuration(elapsedSeconds)}</div>
           </div>
@@ -258,24 +257,26 @@ export default function CallSurface({ socket, sessionId, roomId, setRoomId, onOp
 
         {!connected ? (
           <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <section className="overflow-hidden rounded-[2rem] border border-graphite-100 bg-white/92 p-6 shadow-panel backdrop-blur-sm">
-              <div className="max-w-2xl space-y-5">
+            <section className="relative overflow-hidden rounded-[2rem] border border-graphite-100/80 bg-graphite-50/92 p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] backdrop-blur-sm">
+              <div className="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-institute-500/14 blur-3xl" />
+              <div className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-institute-500/10 blur-3xl" />
+              <div className="relative z-10 max-w-2xl space-y-5">
                 <div className="text-[11px] uppercase tracking-[0.28em] text-graphite-500">Join or create room</div>
-                <h1 className="text-4xl font-semibold tracking-tight text-graphite-950">A restrained call interface that becomes assertive only when the risk rises.</h1>
+                <h1 className="text-4xl font-semibold tracking-tight text-graphite-900">A restrained call interface that becomes assertive only when the risk rises.</h1>
                 <p className="max-w-xl text-sm leading-6 text-graphite-600">
-                  The video feed stays dominant. A thin procedural strip tracks risk, and the full intervention layer only appears when the detection pipeline crosses the critical threshold.
+                  The call stays calm and readable until the risk ladder asks for more attention.
                 </p>
                 <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
                   <input
                     value={draftRoom}
                     onChange={(event) => setDraftRoom(event.target.value.toUpperCase())}
                     placeholder="Enter or create room code"
-                    className="rounded-[1.05rem] border border-graphite-100 bg-white px-4 py-3 font-mono text-sm uppercase tracking-[0.18em] outline-none transition focus:border-institute-500/40 focus:ring-4 focus:ring-institute-500/10"
+                    className="rounded-[1.05rem] border border-graphite-100 bg-graphite-50 px-4 py-3 font-mono text-sm uppercase tracking-[0.18em] outline-none transition focus:border-institute-500/40 focus:ring-4 focus:ring-institute-500/10"
                   />
                   <button
                     type="button"
                     onClick={() => setDraftRoom(`SC-${Math.random().toString(36).slice(2, 8).toUpperCase()}`)}
-                    className="rounded-[1.05rem] border border-graphite-100 bg-graphite-50 px-4 py-3 text-sm font-medium text-graphite-700 transition hover:border-institute-500/30 hover:text-institute-500"
+                    className="rounded-[1.05rem] border border-graphite-100 bg-white px-4 py-3 text-sm font-medium text-graphite-700 transition hover:border-institute-500/30 hover:text-institute-500"
                   >
                     Create room
                   </button>
@@ -284,30 +285,24 @@ export default function CallSurface({ socket, sessionId, roomId, setRoomId, onOp
                   <button
                     type="button"
                     onClick={joinCall}
-                    className="rounded-[1.05rem] bg-graphite-900 px-5 py-3 text-sm font-medium text-graphite-50 transition hover:bg-institute-600"
+                    className="rounded-[1.05rem] bg-institute-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_4px_16px_rgba(78,127,147,0.35)] transition hover:bg-institute-600"
                   >
                     Enter call
                   </button>
                   <button
                     type="button"
                     onClick={() => setRoomId(draftRoom.trim() || roomId)}
-                    className="rounded-[1.05rem] border border-graphite-100 px-5 py-3 text-sm font-medium text-graphite-700 transition hover:border-institute-500/30 hover:text-institute-500"
+                    className="rounded-[1.05rem] border border-graphite-100 bg-white px-5 py-3 text-sm font-medium text-graphite-700 transition hover:border-institute-500/30 hover:text-institute-500"
                   >
                     Save room code
                   </button>
                 </div>
-                <div className="rounded-[1.25rem] border border-graphite-100 bg-graphite-50 p-4 text-sm text-graphite-600">
-                  Room sharing is code-based, so the same call can be opened in another tab as the second participant for demo purposes.
-                </div>
               </div>
             </section>
 
-            <aside className="space-y-4 rounded-[2rem] border border-graphite-100 bg-white/92 p-5 shadow-panel backdrop-blur-sm">
+            <aside className="space-y-4 rounded-[2rem] border border-graphite-100 bg-graphite-50/92 p-5 shadow-panel backdrop-blur-sm">
               <div className="text-[11px] uppercase tracking-[0.28em] text-graphite-500">Risk signature</div>
               <RiskMeter level={latestRisk.riskLevel} score={latestRisk.riskScore} />
-              <div className="rounded-[1.25rem] border border-graphite-100 bg-graphite-50 p-4 text-sm text-graphite-600">
-                The same stepped ladder appears in the dashboard, so the citizen surface and the command surface share one visual grammar.
-              </div>
               <div className="rounded-[1.25rem] border border-graphite-100 bg-graphite-50 p-4">
                 <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-graphite-400">status</div>
                 <div className={`mt-2 text-base font-semibold ${callTone === 'critical' ? 'text-critical-500' : callTone === 'caution' ? 'text-caution-500' : 'text-institute-500'}`}>
@@ -381,7 +376,6 @@ export default function CallSurface({ socket, sessionId, roomId, setRoomId, onOp
                         Review dashboard
                       </button>
                     </div>
-                    <div className="mt-4 text-[11px] uppercase tracking-[0.2em] text-white/45">case {shortId(sessionId)}</div>
                   </div>
                 </div>
               ) : null}
@@ -401,22 +395,19 @@ export default function CallSurface({ socket, sessionId, roomId, setRoomId, onOp
         )}
 
         <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="rounded-[1.5rem] border border-graphite-100 bg-white/88 p-4 shadow-panel backdrop-blur-sm">
+          <div className="rounded-[1.5rem] border border-graphite-100 bg-graphite-50/88 p-4 shadow-panel backdrop-blur-sm">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] uppercase tracking-[0.24em] text-graphite-500">Pipeline state</div>
                 <div className="mt-1 text-sm text-graphite-600">
-                  {connected ? 'Transcript chunks stream into the detection stub, which returns a clean contract-shaped risk response and stores the session snapshot.' : 'Join the room to start the call, capture speech, and trigger the detection stub.'}
+                  {connected ? 'Transcript chunks stream into detection and update the live risk state.' : 'Join the room to start the call and capture speech.'}
                 </div>
-              </div>
-              <div className="rounded-[0.95rem] border border-graphite-100 bg-graphite-50 px-3 py-2 font-mono text-xs text-graphite-600">
-                model contract: /api/detect
               </div>
             </div>
             {error ? <div className="mt-3 rounded-[1.1rem] border border-critical-500/20 bg-critical-500/10 px-4 py-3 text-sm text-critical-500">{error}</div> : null}
           </div>
 
-          <div className="rounded-[1.5rem] border border-graphite-100 bg-white/88 p-4 shadow-panel backdrop-blur-sm">
+          <div className="rounded-[1.5rem] border border-graphite-100 bg-graphite-50/88 p-4 shadow-panel backdrop-blur-sm">
             <div className="text-[11px] uppercase tracking-[0.24em] text-graphite-500">Manual transcript</div>
             <div className="mt-3 flex gap-2">
               <input
@@ -425,7 +416,7 @@ export default function CallSurface({ socket, sessionId, roomId, setRoomId, onOp
                 placeholder="Inject a demo speech chunk"
                 className="min-w-0 flex-1 rounded-[1rem] border border-graphite-100 bg-white px-3 py-2 text-sm font-mono outline-none transition focus:border-institute-500/40 focus:ring-4 focus:ring-institute-500/10"
               />
-              <button type="button" onClick={submitManualTranscript} className="rounded-[1rem] bg-graphite-900 px-4 py-2 text-sm font-medium text-graphite-50 transition hover:bg-institute-600">
+              <button type="button" onClick={submitManualTranscript} className="rounded-[1rem] bg-institute-500 px-4 py-2 text-sm font-medium text-white shadow-[0_2px_10px_rgba(78,127,147,0.25)] transition hover:bg-institute-600">
                 Send
               </button>
             </div>

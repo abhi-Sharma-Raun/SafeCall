@@ -251,27 +251,28 @@ export default function CommandDashboard({ socket, onFocusCall }) {
   }
 
   return (
-    <div className="min-h-screen bg-graphite-900 text-graphite-100">
-      <div className="border-b border-white/5 bg-graphite-900/96 backdrop-blur-md">
+    <div className="relative min-h-screen bg-[radial-gradient(circle_at_50%_0%,#18222d_0%,#0d1117_85%)] text-graphite-100">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px]" />
+      <div className="relative z-10 border-b border-white/5 bg-graphite-900/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1600px] flex-col gap-3 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-6">
           <div>
             <div className="text-[11px] uppercase tracking-[0.28em] text-graphite-400">MHA / telecom command dashboard</div>
             <h2 className="mt-1 text-2xl font-semibold tracking-tight text-white">Digital arrest alert console</h2>
           </div>
           <div className="flex flex-wrap items-center gap-3 text-sm text-graphite-300">
-            <div className="rounded-[0.95rem] border border-graphite-700 bg-graphite-900 px-3 py-2 font-mono">sessions {sessions.length}</div>
-            <div className="rounded-[0.95rem] border border-graphite-700 bg-graphite-900 px-3 py-2 font-mono">incidents {incidents.length}</div>
-            <div className="rounded-[0.95rem] border border-graphite-700 bg-graphite-900 px-3 py-2 font-mono">alerts {alerts.length}</div>
-            <button type="button" onClick={onFocusCall} className="rounded-[0.95rem] border border-institute-500/30 bg-institute-500/10 px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-institute-500 transition hover:bg-institute-500/16">
+            <div className="rounded-[0.95rem] border border-graphite-700 bg-graphite-900/80 px-3 py-2 font-mono">sessions {sessions.length}</div>
+            <div className="rounded-[0.95rem] border border-graphite-700 bg-graphite-900/80 px-3 py-2 font-mono">incidents {incidents.length}</div>
+            <div className="rounded-[0.95rem] border border-graphite-700 bg-graphite-900/80 px-3 py-2 font-mono">alerts {alerts.length}</div>
+            <button type="button" onClick={onFocusCall} className="rounded-[0.95rem] bg-institute-500 px-3.5 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white shadow-[0_4px_14px_rgba(78,127,147,0.3)] transition hover:bg-institute-600">
               Focus call surface
             </button>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-[1600px] gap-4 px-4 py-4 lg:grid-cols-[300px_minmax(0,1fr)_360px] lg:px-6">
-        <aside className="rounded-[2rem] border border-graphite-700 bg-graphite-800 shadow-panel">
-          <div className="border-b border-graphite-700 px-4 py-4">
+      <div className="relative z-10 mx-auto grid max-w-[1600px] gap-4 px-4 py-4 lg:grid-cols-[300px_minmax(0,1fr)] lg:px-6">
+        <aside className="rounded-[2rem] border border-graphite-700/80 bg-graphite-800/90 shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+          <div className="border-b border-graphite-700/80 px-4 py-4">
             <div className="text-[11px] uppercase tracking-[0.24em] text-graphite-400">Active sessions</div>
             <div className="mt-1 text-sm text-graphite-300">Ordered by latest update and risk posture.</div>
           </div>
@@ -285,7 +286,7 @@ export default function CommandDashboard({ socket, onFocusCall }) {
                   key={session.sessionId}
                   type="button"
                   onClick={() => setActiveSessionId(session.sessionId)}
-                  className={`mb-2 w-full rounded-[1.35rem] border p-3 text-left transition ${selected ? 'border-institute-500/40 bg-institute-500/10' : 'border-graphite-700 bg-graphite-900/70 hover:border-graphite-500/70 hover:bg-graphite-900'}`}
+                  className={`mb-2 w-full rounded-[1.35rem] border p-3 text-left transition ${selected ? 'border-institute-500/50 bg-institute-500/12 shadow-[0_4px_20px_rgba(78,127,147,0.15)]' : 'border-graphite-700/80 bg-graphite-900/70 hover:border-graphite-500/70 hover:bg-graphite-900'}`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
@@ -298,8 +299,14 @@ export default function CommandDashboard({ socket, onFocusCall }) {
                     <span>{session.status || getStatusLabel(session.riskLevel)}</span>
                     <span>{formatDuration(session.durationSeconds || 0)}</span>
                   </div>
-                  <div className="mt-3">
-                    <RiskMeter level={session.riskLevel || 'LOW'} score={session.riskScore || 0} compact />
+                  <div className="mt-3 flex items-center justify-between gap-2 rounded-[0.95rem] border border-graphite-700/60 bg-black/25 px-3 py-2 text-xs font-mono">
+                    <div className="flex items-center gap-2">
+                      <span className={`h-2 w-2 rounded-full ${session.riskLevel === 'CRITICAL' ? 'bg-critical-500 animate-pulse' : session.riskLevel === 'ELEVATED' ? 'bg-caution-500' : 'bg-institute-500'}`} />
+                      <span className={`text-[11px] uppercase tracking-wider ${session.riskLevel === 'CRITICAL' ? 'text-critical-500 font-semibold' : session.riskLevel === 'ELEVATED' ? 'text-caution-500 font-semibold' : 'text-institute-500'}`}>
+                        {session.riskLevel || 'LOW'}
+                      </span>
+                    </div>
+                    <span className="text-graphite-400 font-medium">score {(session.riskScore || 0).toFixed(2)}</span>
                   </div>
                 </button>
               )
@@ -332,7 +339,7 @@ export default function CommandDashboard({ socket, onFocusCall }) {
                 </div>
               </div>
 
-              <div className="grid gap-4 p-5 xl:grid-cols-[minmax(0,1fr)_300px]">
+              <div className="grid gap-4 p-5 xl:grid-cols-[minmax(0,1fr)_360px]">
                 <section className="space-y-4">
                   <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     <DataBox label="risk score" value={Number(selectedSession.riskScore || 0).toFixed(2)} />
@@ -417,7 +424,7 @@ export default function CommandDashboard({ socket, onFocusCall }) {
                   </div>
 
                   <div className="rounded-[1.35rem] border border-institute-500/20 bg-institute-500/8 p-4 text-sm text-graphite-200">
-                    The same session snapshot can be exported as a case packet. The console is intentionally dense and procedural so it feels like operational infrastructure rather than a demo toy.
+                    The session snapshot can be exported as a case packet.
                   </div>
 
                   <button type="button" onClick={exportIncident} className="w-full rounded-[1rem] border border-graphite-700 bg-graphite-900 px-4 py-3 text-sm font-medium text-white transition hover:border-institute-500/40 hover:text-institute-500">
